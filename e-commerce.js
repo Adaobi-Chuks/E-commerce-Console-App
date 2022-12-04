@@ -3,9 +3,13 @@ const prompt = require("prompt-sync")({sigint: true});
 const cart = [];
 const products = new Map();
 
-products.set("Drinks", [["Pepsi", 200, 4], ["Coke", 200, 4], ["Fanta", 200, 4]]);
-products.set("Food", [["Fanta", 200, 4], ["Pepsi", 200, 4], ["Coke", 200, 4]]);
-products.set("Beverages", [["Coke", 200, 4], ["Fanta", 200, 4], ["Pepsi", 200, 4]]);
+products.set("Drinks", [["Pepsi", 500, 1], ["Coke", 500, 1], ["Fanta", 500, 1]]);
+products.set("Food", [["Rice", 2000, 1], ["Swallow", 5000, 1], ["Pie", 7000, 1]]);
+products.set("Furniture", [["Table", 15000, 1], ["Tv", 50000, 1], ["Chair", 8000, 1]]);
+products.set("Cosmetics", [["Cream", 6000, 1], ["Scrub", 3000, 1], ["Perfume", 4000, 1]]);
+products.set("Clothes", [["Trouser", 7500, 1], ["Shirts", 5000, 1], ["Shoes", 20000, 1]]);
+products.set("Car", [["Honda", 500000, 1], ["Camry", 1000000, 1], ["Corolla", 750000, 1]]);
+products.set("Appliances", [["Laptop", 500000, 1], ["Phone", 200000, 1], ["Tablet", 400000, 1]]);
 
 const displayCategory = () => {
     let category = "";
@@ -19,7 +23,7 @@ const displayCategory = () => {
 
 const displayProducts = (num = 0) => {
     let count = 1;
-    if (num < 0 || num > 3) {
+    if (num < 0 || num > 7) {
         return `Please input a valid Aisle or Product`
     } else {
         const key = Array.from(products.keys())[num - 1];
@@ -36,13 +40,12 @@ const displayProducts = (num = 0) => {
 const calculateTotal = () => {
     let totalAmount = 0;
     cart.forEach(product => {
-        totalAmount += (product.amount * product.quantity);
+        totalAmount += (product[2] * product[1]);
     });
     return totalAmount;
 }
-const total = calculateTotal();
 
-const calculateDiscount = () => {
+const calculateDiscount = (total = calculateTotal()) => {
     if (total > 200000) {
         return 20;
     } else if (total > 150000) {
@@ -59,9 +62,8 @@ const calculateDiscount = () => {
         return 0;
     }
 }
-const discount = calculateDiscount();
 
-const calculateTax = () => {
+const calculateTax = (total = calculateTotal()) => {
     return total * 0.1;
 }
 
@@ -79,13 +81,14 @@ const manageOrders = () => {
     console.log("*********************************************************************************\n");
     const name = prompt("Please input your name to gain access to your personal cart: ").toUpperCase();
     console.log(`\n\tWelcome ${name}!!!\n\n\tSo pleased to have you here ${name}.\n`);
+    console.log(`Hey ${name}, buy at least goods worth 30000 naira to qualify for discount of up to 20%.\n`);
     while (true) {
         console.log("What action would you like to perform?\nOptions: \n\ta) Add to cart\n\tb) Remove from cart\n\tc) Checkout");
         const option = prompt().toLowerCase();
         switch(option) {
             case "a":
                 console.log(`\n${displayCategory()}`);
-                console.log("Choose a category to shop for between: 1 and 3 above\n\t");
+                console.log("Choose a category to shop for between: 1 and 7 above\n\t");
                 const category = prompt();
                 console.log(displayProducts(category) + "\n\nChoose an item to add to your cart between: 1 and 3 above\n\t");
                 const itemToAdd = prompt();
@@ -102,16 +105,16 @@ const manageOrders = () => {
                 const address = prompt("Please input your address: ");
                 return console.log("\n*************************************RECEIPT*************************************\n"
                         + displayCart() 
-                        + `\n\nTotal purchase: ${total}\nTax: ${calculateTax()}\nDiscount:${discount * 0.01 * total}\n\n`
-                        + `Amount to be paid = ${(total * discount) + calculateTax()}`
+                        + `\n\nTotal purchase: ${calculateTotal()}\nTax: ${calculateTax()}\nDiscount:${calculateDiscount() * 0.01 * calculateTotal()}\n\n`
+                        + `Amount to be paid = ${(calculateTotal() * calculateDiscount()) + calculateTax()}`
                         + `\n\nPlease expect your package within 5 working days to be delivered to ${address}\n\n`);
             default:
                 continue;
         }
         console.log("\n" + "\n**************************************CART**************************************\n" 
                 + displayCart() 
-                + `\n\n\tTotal: ${total}` 
-                +`\nYou are eligible for ${discount}% discount\n`);
+                + `\n\n\tTotal: ${calculateTotal()}` 
+                +`\nYou are eligible for ${calculateDiscount()}% discount\n`);
         prompt("Press enter to continue!\n");
     }
 }
