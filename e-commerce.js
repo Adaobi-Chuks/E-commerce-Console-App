@@ -1,17 +1,6 @@
 const prompt = require("prompt-sync")({sigint: true});
 
 const cart = [];
-
-// cart.push({
-//     name: "Pepsi",
-//     amount: 200,
-//     quantity: 4,
-// }, {
-//     name: "Coke",
-//     amount: 200,
-//     quantity: 4,
-// })
-
 const products = new Map();
 
 products.set("Drinks", [["Pepsi", 200, 4], ["Coke", 200, 4], ["Fanta", 200, 4]]);
@@ -89,8 +78,8 @@ const displayCart = () => {
     cart.forEach(product => {
         toString += `\n${product[0]}\t\t\t${1}\t\t  ${product[1]}`
     })
-    return "**************************************CART**************************************" 
-            + `\nProduct\tQuantity\tAmount` + toString + 
+    return "\n**************************************CART**************************************" 
+            + `\nProduct\t\tQuantity\tAmount` + toString + 
             `\n\n\tTotal: ${total}` +
             `\nYou are eligible for ${discount}% dicount\n`;
 }
@@ -119,17 +108,20 @@ const manageOrders = () => {
                 console.log("Choose a category to shop for between: 1 and 3 above\n\t");
                 const category = prompt();
                 console.log(displayProducts(category) + "\n\nChoose an item to add to your cart between: 1 and 3 above\n\t");
-                const item= prompt();
+                const itemToAdd = prompt();
                 const key = Array.from(products.keys())[category - 1];
-                cart.push(products.get(key)[item - 1]);
+                cart.push(products.get(key)[itemToAdd - 1]);
                 break;
             case "b":
+                console.log(`\nChoose an item to delete from your cart between: 1 and ${cart.length} above\n\t`);
+                const itemToDelete = prompt();
+                cart.splice(itemToDelete - 1, 1);
                 break;
             case "c":
                 const option = prompt("Please input your address: ");
                 break;
             default:
-                break;
+                continue;
         }
         console.log(displayCart());
         prompt("Press enter to continue!\n");
