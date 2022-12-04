@@ -40,7 +40,6 @@ const calculateTotal = () => {
     });
     return totalAmount;
 }
-
 const total = calculateTotal();
 
 const calculateDiscount = () => {
