@@ -33,21 +33,17 @@ const displayProducts = (num = 0) => {
     }
 }
 
-// console.log(displayProducts());
-
 const calculateTotal = () => {
     let totalAmount = 0;
     cart.forEach(product => {
         totalAmount += (product.amount * product.quantity);
     });
     return totalAmount;
-    // return `Your total purchase cost ${totalAmount} with a tax of ${tax}: Total = ${totalAmount + tax}`;
 }
 
 const total = calculateTotal();
 
 const calculateDiscount = () => {
-    let discount;
     if (total > 200000) {
         return 20;
     } else if (total > 150000) {
@@ -64,34 +60,19 @@ const calculateDiscount = () => {
         return 0;
     }
 }
+const discount = calculateDiscount();
 
 const calculateTax = () => {
     return total * 0.1;
 }
 
-// console.log(calculateTax());
-
-const discount = calculateDiscount();
-
 const displayCart = () => {
     let toString = "";
     cart.forEach(product => {
-        toString += `\n${product[0]}\t\t\t${1}\t\t  ${product[1]}`
+        toString += `\n${product[0]}\t\t${1}\t\t  ${product[1]}`
     })
-    return "\n**************************************CART**************************************" 
-            + `\nProduct\t\tQuantity\tAmount` + toString + 
-            `\n\n\tTotal: ${total}` +
-            `\nYou are eligible for ${discount}% dicount\n`;
+    return `Product\t\tQuantity\tAmount` + toString;
 }
-
-// console.log(displayCart());
-
-
-//manage order: does the following:
-//add to cart
-//remove from cart
-//checkout: asks for an address, a rider will be with you, thanks for shopping
-//view cart
 
 const manageOrders = () => {
     console.log("\n*********************************************************************************");
@@ -118,12 +99,20 @@ const manageOrders = () => {
                 cart.splice(itemToDelete - 1, 1);
                 break;
             case "c":
-                const option = prompt("Please input your address: ");
-                break;
+                console.log("Thank you for shopping with us.\n")
+                const address = prompt("Please input your address: ");
+                return console.log("\n*************************************RECEIPT*************************************\n"
+                        + displayCart() 
+                        + `\n\nTotal purchase: ${total}\nTax: ${calculateTax()}\nDiscount:${discount * 0.01 * total}\n\n`
+                        + `Amount to be paid = ${(total * discount) + calculateTax()}`
+                        + `\n\nPlease expect your package within 5 working days to be delivered to ${address}\n\n`);
             default:
                 continue;
         }
-        console.log(displayCart());
+        console.log("\n" + "\n**************************************CART**************************************\n" 
+                + displayCart() 
+                + `\n\n\tTotal: ${total}` 
+                +`\nYou are eligible for ${discount}% discount\n`);
         prompt("Press enter to continue!\n");
     }
 }
